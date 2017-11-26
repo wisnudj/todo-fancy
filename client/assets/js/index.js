@@ -23,7 +23,9 @@ var app = new Vue({
 
     readTask: function() {
 
-      axios.get('http://localhost:3000/api/todolist/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVhMTE4YjZhMWM3NzE1MjU5OWQ3YTRkMyIsInVzZXJuYW1lIjoid2lzbnUiLCJlbWFpbCI6Indpc251QGdtYWlsLmNvbSIsImxvZ2luIjp0cnVlLCJpYXQiOjE1MTExMDI3OTZ9.BxdGmWYrP32XzRIL8qs486xb2nJSjnFvzM2kcY97rF4/all')
+      var token = localStorage.getItem('doit_token')
+
+      axios.get(`http://localhost:3000/api/todolist/${token}/all`)
         .then((response) => {
 
           this.username = response.data.username
@@ -63,7 +65,9 @@ var app = new Vue({
 
     addTask: function() {
 
-      axios.put('http://localhost:3000/api/todolist/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVhMTE4YjZhMWM3NzE1MjU5OWQ3YTRkMyIsInVzZXJuYW1lIjoid2lzbnUiLCJlbWFpbCI6Indpc251QGdtYWlsLmNvbSIsImxvZ2luIjp0cnVlLCJpYXQiOjE1MTExMDI3OTZ9.BxdGmWYrP32XzRIL8qs486xb2nJSjnFvzM2kcY97rF4/add', {
+      var token = localStorage.getItem('doit_token')
+
+      axios.put(`http://localhost:3000/api/todolist/${token}/add`, {
           detail: document.getElementById('task').value
         })
         .then((response) => {
@@ -89,7 +93,10 @@ var app = new Vue({
     },
 
     tandaiSudah: function(idtask) {
-      axios.put('http://localhost:3000/api/todolist/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVhMTE4YjZhMWM3NzE1MjU5OWQ3YTRkMyIsInVzZXJuYW1lIjoid2lzbnUiLCJlbWFpbCI6Indpc251QGdtYWlsLmNvbSIsImxvZ2luIjp0cnVlLCJpYXQiOjE1MTExMDI3OTZ9.BxdGmWYrP32XzRIL8qs486xb2nJSjnFvzM2kcY97rF4/tandaiselesai', {
+
+      var token = localStorage.getItem('doit_token')
+
+      axios.put(`http://localhost:3000/api/todolist/${token}/tandaiselesai`, {
           id: idtask
         })
         .then((response) => {
@@ -99,12 +106,37 @@ var app = new Vue({
           console.log(error);
         });
       console.log(idtask);
+    },
+
+    ceklogin() {
+      if(localStorage.getItem("doit_token") === null){
+          localStorage.removeItem("doit_token");
+          window.location.replace("/");
+      }
+    },
+
+
+    login() {
+      axios.post('http://localhost:3000/api/user/signin', {
+          email: document.getElementById('email').value,
+          password: document.getElementById('password').value
+        })
+        .then(function (response) {
+          console.log('yiha');
+          console.log(response.data);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+
+      console.log(document.getElementById('email').value)
+      console.log(document.getElementById('password').value);
     }
 
   },
 
   created: function() {
-
+    this.ceklogin()
     this.readTask()
 
   }

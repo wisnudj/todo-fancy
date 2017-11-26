@@ -1,3 +1,4 @@
+const FB = require("fb");
 const userModel = require('../models/user')
 const kripto = require('../helpers/kripto');
 const jwtoken = require('../helpers/jwtoken');
@@ -47,6 +48,32 @@ class User {
   static getAllUser(req, res) {
     userModel.find().then((user) => {
       res.send(user)
+    })
+  }
+
+  static facebooksignin(req, res) {
+    FB.setAccessToken(req.body.accessToken);
+    FB.api(req.body.userID,{fields:["id","name","email","picture"]},(response)=>{
+      userModel.findOne({email: response.email}).then((user) => {
+        if(user) {
+          jwtoken.createtoken(user).then((token) => {
+            res.send({pesan: "berhasil login facebook", token: token})
+          })
+        } else {
+          var plainpassword = response.name
+
+          kripto.enkripsi(plainpassword).then((hash) => {
+            userModel.create({
+              _id: new mongoose.Types.ObjectId(),
+              username: response.name,
+              email: response.email,
+              password: hash
+            }).then(() => {
+              res.status(200).send('berhasil')
+            })
+          })
+        }
+      })
     })
   }
 

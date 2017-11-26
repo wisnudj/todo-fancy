@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <script src="https://unpkg.com/vue"></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <body>
+
+    <div id="app">
+
+      <input type="text" class="" id="task" :value="task">
+      <button type="submit" class="" v-on:click="addTask">Create</button>
+
+      <todo-list :task="task" :taskbelum="taskBelum" :tasksudah="taskSudah" @hapus-satu="deletetask" @tandai-sudah="tandaiSudah"></todo-list>
+
+    </div>
+
+
+  <script src="/assets/js/todo-list.js"></script>
+  <script src="/assets/js/index.js"></script>
+  </body>
+</html>
