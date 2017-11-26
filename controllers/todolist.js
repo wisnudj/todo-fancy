@@ -36,8 +36,6 @@ class Todolist {
   }
 
   static deleteTask(req, res) {
-    var id = req.body.id
-    console.log(id);
     todoModel.findOne({_id: req.body.id}).then((user) => {
       user.remove(function() {
         userModel.findOne()

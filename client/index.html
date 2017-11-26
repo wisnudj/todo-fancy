@@ -4,18 +4,21 @@
     <meta charset="utf-8">
     <title></title>
   </head>
+  <script src="https://unpkg.com/vue"></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
   <body>
 
-    <h1>Todo Fancy</h1>
-    <table id="list-todo">
-      <tr>
-        <th>judul</th>
-        <th>detail</th>
-        <th>status</th>
-      </tr>
-    </table>
+    <div id="app">
 
+      <input type="text" class="" id="task" :value="task">
+      <button type="submit" class="" v-on:click="addTask">Create</button>
+
+      <todo-list :task="task" :taskbelum="taskBelum" :tasksudah="taskSudah" @hapus-satu="deletetask" @tandai-sudah="tandaiSudah"></todo-list>
+
+    </div>
+
+
+  <script src="/assets/js/todo-list.js"></script>
+  <script src="/assets/js/index.js"></script>
   </body>
-  <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
-  <script src="./js/index.js"></script>
 </html>
