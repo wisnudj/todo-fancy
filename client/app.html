@@ -3,22 +3,54 @@
   <head>
     <meta charset="utf-8">
     <title></title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://unpkg.com/vue"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
   </head>
-  <script src="https://unpkg.com/vue"></script>
-  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
   <body>
-
     <div id="app">
 
-      <input type="text" class="" id="task" :value="task">
-      <button type="submit" class="" v-on:click="addTask">Create</button>
+      <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+          <div class="navbar-header">
+            <img src="doit.png" alt="" width="60%;">
+          </div>
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="" data-toggle="modal" data-target="#myModal"><span class="glyphicon glyphicon-plus"></span> add task</a></li>
+            <li><a href="" v-on:click="logout"><span class="glyphicon glyphicon-cog"></span> Logout</a></li>
+          </ul>
+        </div>
+      </nav>
 
-      <todo-list :task="task" :taskbelum="taskBelum" :tasksudah="taskSudah" @hapus-satu="deletetask" @tandai-sudah="tandaiSudah"></todo-list>
+      <todo-list-dev :task="task" :taskbelum="taskBelum" :tasksudah="taskSudah" @hapus-satu="deletetask" @tandai-sudah="tandaiSudah"></todo-list-dev>
+
+      <!-- Modal -->
+      <div id="myModal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+
+          <!-- Modal content-->
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+              <h4 class="modal-title">Add Task</h4>
+            </div>
+            <div class="modal-body">
+              <input type="text" class="form-control" id="task" :value="task">
+            </div>
+            <div class="modal-footer">
+              <button type="submit" class="btn btn-default" v-on:click="addTask">Add Task</button>
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
 
     </div>
-
-
-  <script src="/assets/js/todo-list.js"></script>
-  <script src="/assets/js/index.js"></script> 
+    <script src="/assets/js/todo-list-dev.js"></script>
+    <script src="/assets/js/index.js"></script>
   </body>
 </html>

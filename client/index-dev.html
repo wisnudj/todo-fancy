@@ -15,26 +15,24 @@
 
   <body>
     <div id="app">
-
       <div class="container">
         <div class="form-signin">
-          <div class="">
-            <img src="doit.png" alt="" width="50%" align="center">
-          </div>
           <h2 class="form-signin-heading">Please sign in</h2>
           <label for="inputEmail" class="sr-only">Email address</label>
-          <input type="email" name="email" class="form-control" placeholder="Email address" required autofocus id="email">
-          <input type="password" name="password" class="form-control" placeholder="Password" required id="password">
+          <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
+          <label for="inputPassword" class="sr-only">Password</label>
+          <input type="password" id="inputPassword" class="form-control" placeholder="Password" required>
           <div class="checkbox">
             <label>
-              <h4><a href="#">register</a></h4>
+              <a href="#">register</a>
             </label>
           </div>
-          <button class="btn btn-lg btn-danger btn-block" type="button" name="button" id="signin" v-on:click="login">sign in</button>
-          <button class="btn btn-lg btn-primary btn-block" type="button" name="button" onclick="facebookLogin()">Login with facebook</button>
+          <button class="btn btn-lg btn-primary btn-block" type="submit" id="signin" v-on:click="login">Sign in</button>
+          <button class="btn btn-lg btn-primary btn-block" type="submit" onclick="facebookLogin()">Sign with facebook</button>
         </div>
       </div>
     </div>
+
 
 
     <script src="/assets/js/facebooksdk.js"></script>

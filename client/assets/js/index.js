@@ -13,9 +13,7 @@ var app = new Vue({
 
     username: '',
 
-    email: '',
-
-    halo: 'Anjing babi'
+    email: ''
 
   },
 
@@ -72,6 +70,7 @@ var app = new Vue({
         })
         .then((response) => {
           document.getElementById(('task')).value = ''
+          location.reload()
         })
         .catch((error) => {
           console.log(error);
@@ -90,6 +89,7 @@ var app = new Vue({
           console.log(error);
         });
       console.log(idtask);
+      location.reload()
     },
 
     tandaiSudah: function(idtask) {
@@ -101,6 +101,7 @@ var app = new Vue({
         })
         .then((response) => {
           console.log(response);
+          location.reload()
         })
         .catch((error) => {
           console.log(error);
@@ -131,6 +132,11 @@ var app = new Vue({
 
       console.log(document.getElementById('email').value)
       console.log(document.getElementById('password').value);
+    },
+
+    logout: function() {
+      localStorage.removeItem("doit_token")
+      location.reload()
     }
 
   },
