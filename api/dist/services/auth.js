@@ -11,11 +11,11 @@ const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const SALT_ROUNDS = 10;
 const register = async (email, password, confirmPassword) => {
     if (password !== confirmPassword) {
-        throw new Error("password do not match");
+        throw new Error("PASSWORD_DO_NOT_MATCH");
     }
     const existingUser = await user_1.UserModel.findOne({ email });
     if (existingUser)
-        throw new Error("user already exists");
+        throw new Error("USER_ALREADY_EXISTS");
     const hashedPassword = await bcrypt_1.default.hash(password, SALT_ROUNDS);
     const user = await user_1.UserModel.create({
         email,
@@ -31,10 +31,10 @@ exports.register = register;
 const login = async (email, password) => {
     const user = await user_1.UserModel.findOne({ email });
     if (!user)
-        throw new Error("user not found");
+        throw new Error("USER_NOT_FOUND");
     const isPasswordValid = await bcrypt_1.default.compare(password, user.password);
     if (!isPasswordValid)
-        throw new Error("invalid password");
+        throw new Error("INVALID_PASSWORD");
     const token = jsonwebtoken_1.default.sign({ id: user._id }, config_1.JWT_SECRET, { expiresIn: config_1.JWT_EXPIRES_IN });
     return {
         token,

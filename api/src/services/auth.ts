@@ -15,11 +15,11 @@ export interface AuthResult {
 
 export const register = async (email: string, password: string, confirmPassword: string): Promise<AuthResult> => {
     if (password !== confirmPassword) {
-        throw new Error("password do not match")
+        throw new Error("PASSWORD_DO_NOT_MATCH")
     }
 
     const existingUser = await UserModel.findOne({ email })
-    if (existingUser) throw new Error("user already exists")
+    if (existingUser) throw new Error("USER_ALREADY_EXISTS")
 
     const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS)
 
@@ -38,10 +38,10 @@ export const register = async (email: string, password: string, confirmPassword:
 
 export const login = async (email: string, password: string): Promise<AuthResult> => {
     const user = await UserModel.findOne({ email })
-    if (!user) throw new Error("user not found")
+    if (!user) throw new Error("USER_NOT_FOUND")
 
     const isPasswordValid = await bcrypt.compare(password, user.password)
-    if (!isPasswordValid) throw new Error("invalid password")
+    if (!isPasswordValid) throw new Error("INVALID_PASSWORD")
 
     const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN })
 

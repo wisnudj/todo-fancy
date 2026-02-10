@@ -38,6 +38,9 @@
                         <p class="help is-danger" v-if="loginForm.passwordError">{{ loginForm.passwordError }}</p>
                       </div>
                       <div class="field mt-3">
+                        <div class="notification is-danger is-light" v-if="generalError">
+                          {{ generalError }}
+                        </div>
                         <div class="control">
                           <button type="submit" class="button is-primary is-fullwidth">Login</button>
                         </div>
@@ -77,6 +80,9 @@
                         <p class="help is-danger" v-if="registerForm.confirmPasswordError">{{ registerForm.confirmPasswordError }}</p>
                       </div>
                       <div class="field mt-3">
+                        <div class="notification is-danger is-light" v-if="generalError">
+                          {{ generalError }}
+                        </div>
                         <div class="control">
                           <button type="submit" class="button is-primary is-fullwidth">Register</button>
                         </div>
@@ -95,6 +101,11 @@
 
 <script setup lang="ts">
 import { reactive, ref } from 'vue'
+import * as authService  from "@/services/auth-service"
+import { ApiError } from '@/services/error';
+import { useRouter } from 'vue-router';
+
+const router = useRouter()
 
 const activeTab = ref<'login' | 'register'>('login')
 
@@ -126,12 +137,15 @@ const registerForm = reactive<{
   confirmPasswordError: null,
 })
 
+const generalError = ref<string | null>(null)
+
 function validateEmail(email : string) : boolean {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
   return emailRegex.test(email)
 }
 
 function validatePassword(password : string) : boolean {
+  // at least 8 characters, 1 uppercase, 1 lowercase, 1 number, 1 special character
   const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
   return passwordRegex.test(password)
 }
@@ -149,9 +163,6 @@ function validateLoginForm() : boolean {
 
   if (loginForm.password === '') {
     loginForm.passwordError = 'Password is required'
-  }
-  else if (!validatePassword(loginForm.password)) {
-    loginForm.passwordError = 'Password is invalid'
   }
   else {
     loginForm.passwordError = null
@@ -203,14 +214,58 @@ function validateRegisterForm() : boolean {
   return true
 }
 
-function handleLogin() : void {
-  if (!validateLoginForm()) return
-  console.log(loginForm)
+async function handleLogin() : Promise<void> {
+  generalError.value = null
+  try {
+    if (!validateLoginForm()) return
+    const resultLogin = await authService.login(loginForm.email, loginForm.password)
+
+    if(resultLogin.token && resultLogin.expiresIn) {
+      localStorage.setItem("token", resultLogin.token)
+      localStorage.setItem("expiresIn", resultLogin.expiresIn)
+      router.push("/")
+    }
+    else {
+      generalError.value = "An unexpected error occurred. Please try again later."
+    }
+  }
+  catch(err: unknown) {
+    if (err instanceof ApiError) {
+      if (err.status === 404) {
+        loginForm.emailError = 'Email not found'
+      } else if (err.status === 401) {
+        loginForm.passwordError = 'Incorrect password'
+      } else {
+        generalError.value = err.message
+      }
+    } else {
+      generalError.value = "An unexpected error occurred. Please try again later."
+    }
+  }
 }
 
-function handleRegister() : void {
-  if (!validateRegisterForm()) return
-  console.log(registerForm)
+async function handleRegister() : Promise<void> {
+  generalError.value = null
+  try {
+    if (!validateRegisterForm()) return
+
+    const resultRegister = await authService.register(registerForm.email, registerForm.password, registerForm.confirmPassword)
+    if (resultRegister.token && resultRegister.expiresIn) {
+      localStorage.setItem("token", resultRegister.token)
+      localStorage.setItem("expiresIn", resultRegister.expiresIn)
+      router.push("/")
+    }
+    else {
+      generalError.value = "An unexpected error occurred. Please try again later."
+    }
+  } catch (err: unknown) {
+    if (err instanceof ApiError) {
+      generalError.value = err.message
+    } else {
+      console.error("Unexpected error", err)
+      generalError.value = "An unexpected error occurred. Please try again later."
+    }
+  }
 }
 
 
