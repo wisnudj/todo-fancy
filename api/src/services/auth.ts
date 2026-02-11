@@ -1,11 +1,9 @@
-import { User, UserModel } from "../models/user"
-
-import { JWT_SECRET, JWT_EXPIRES_IN } from "../config"
-
-import { loginSchema, registerSchema }  from "../validations/auth-schema";
-
 import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
+
+import { UserModel } from "../models/user"
+import { JWT_SECRET, JWT_EXPIRES_IN } from "../config"
+import { loginSchema, registerSchema }  from "../validations/auth-schema"
 
 
 const SALT_ROUNDS = 10

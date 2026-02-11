@@ -1,12 +1,26 @@
 import { Request, Response, NextFunction } from "express"
-import { z } from "zod"
+import { z, ZodError } from "zod"
+import { logger as log } from "../logger"
+
+function flattenZodUnique(err: ZodError): { type: string, message: string }[] {
+    const map = new Map<string, string>()
+
+    for (const issue of err.issues) {
+        const type = issue.path.length ? issue.path.join(".") : "form"
+        if (!map.has(type)) map.set(type, issue.message)
+    }
+
+    return Array.from(map, ([type, message]) => ({ type, message }))
+}
 
 const errorHandler = (err: any, req: Request, res: Response, next: NextFunction) => {
-    if(err instanceof z.ZodError) {
-        console.log(err)
+    log.error(err)
+
+    if (err instanceof z.ZodError) {
         return res.status(422).json({
             status: "error",
-            message: "validation error"
+            message: "validation error",
+            errors: flattenZodUnique(err)
         })
     }
 
