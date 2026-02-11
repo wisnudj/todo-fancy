@@ -11,10 +11,12 @@ const UserSchema = new Schema<User>({
     email: {
         type: String,
         required: true,
+        maxLength: 255
     },
     password: {
         type: String,
         required: true,
+        maxLength: 255
     },
 }, {
     timestamps: true,

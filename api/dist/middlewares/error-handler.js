@@ -1,6 +1,14 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const zod_1 = require("zod");
 const errorHandler = (err, req, res, next) => {
+    if (err instanceof zod_1.z.ZodError) {
+        console.log(err);
+        return res.status(422).json({
+            status: "error",
+            message: "validation error"
+        });
+    }
     let statusCode = err.statusCode || 500;
     let message = err.message || "internal server error";
     switch (message) {

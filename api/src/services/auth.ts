@@ -2,6 +2,8 @@ import { User, UserModel } from "../models/user"
 
 import { JWT_SECRET, JWT_EXPIRES_IN } from "../config"
 
+import { loginSchema, registerSchema }  from "../validations/auth-schema";
+
 import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
 
@@ -14,6 +16,8 @@ export interface AuthResult {
 }
 
 export const register = async (email: string, password: string, confirmPassword: string): Promise<AuthResult> => {
+    await registerSchema.parseAsync({ email, password, confirmPassword })
+
     if (password !== confirmPassword) {
         throw new Error("PASSWORD_DO_NOT_MATCH")
     }
@@ -37,6 +41,8 @@ export const register = async (email: string, password: string, confirmPassword:
 }
 
 export const login = async (email: string, password: string): Promise<AuthResult> => {
+    await loginSchema.parseAsync({ email, password })
+    
     const user = await UserModel.findOne({ email })
     if (!user) throw new Error("USER_NOT_FOUND")
 

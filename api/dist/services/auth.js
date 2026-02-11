@@ -6,10 +6,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.login = exports.register = void 0;
 const user_1 = require("../models/user");
 const config_1 = require("../config");
+const auth_schema_1 = require("../validations/auth-schema");
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const SALT_ROUNDS = 10;
 const register = async (email, password, confirmPassword) => {
+    await auth_schema_1.registerSchema.parseAsync({ email, password, confirmPassword });
     if (password !== confirmPassword) {
         throw new Error("PASSWORD_DO_NOT_MATCH");
     }
@@ -29,6 +31,7 @@ const register = async (email, password, confirmPassword) => {
 };
 exports.register = register;
 const login = async (email, password) => {
+    await auth_schema_1.loginSchema.parseAsync({ email, password });
     const user = await user_1.UserModel.findOne({ email });
     if (!user)
         throw new Error("USER_NOT_FOUND");
