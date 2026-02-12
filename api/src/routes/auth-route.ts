@@ -1,6 +1,6 @@
 import { Router } from "express"
 
-import { register, login } from "../services/auth"
+import { register, login } from "../services/auth-service"
 
 const router = Router()
 
