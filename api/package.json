@@ -19,6 +19,8 @@
     "@types/jsonwebtoken": "^9.0.10",
     "@types/mongoose": "^5.11.96",
     "@types/node": "^24.10.12",
+    "@types/passport": "^1.0.17",
+    "@types/passport-http-bearer": "^1.0.42",
     "nodemon": "^3.1.11",
     "tsc-watch": "^7.2.0",
     "typescript": "^5.9.3",
@@ -32,6 +34,8 @@
     "helmet": "^8.1.0",
     "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.2.0",
+    "passport": "^0.7.0",
+    "passport-http-bearer": "^1.0.1",
     "pino": "^10.3.1",
     "pino-http": "^11.0.0",
     "pino-pretty": "^13.1.3"

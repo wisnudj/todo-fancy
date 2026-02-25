@@ -24,9 +24,10 @@ const errorHandler = (err: any, req: Request, res: Response, next: NextFunction)
         })
     }
 
-    let statusCode = err.statusCode || 500
+    let statusCode = err.status || 500
     let message = err.message || "internal server error"
 
+    // defined error
     switch (message) {
         case "USER_NOT_FOUND":
             statusCode = 404
@@ -44,9 +45,21 @@ const errorHandler = (err: any, req: Request, res: Response, next: NextFunction)
             statusCode = 400
             message = "password do not match"
             break
+        case "USER_TOKEN_NOT_FOUND":
+            statusCode = 401
+            message = "invalid token"
+            break
+        case "jwt expired":
+            statusCode = 401
+            message = "token expired"
+            break
+        case "TASK_NOT_FOUND":
+            statusCode = 404
+            message = "task not found"
+            break
     }
 
-    res.status(statusCode).json({
+    return res.status(statusCode).json({
         status: "error",
         message,
     })

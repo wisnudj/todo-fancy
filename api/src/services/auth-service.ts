@@ -13,6 +13,11 @@ export interface AuthResult {
     expiresIn: number;
 }
 
+export interface UserResult {
+    id: string;
+    email: string;
+}
+
 export const register = async (email: string, password: string, confirmPassword: string): Promise<AuthResult> => {
     await registerSchema.parseAsync({ email, password, confirmPassword })
 
@@ -39,8 +44,6 @@ export const register = async (email: string, password: string, confirmPassword:
 }
 
 export const login = async (email: string, password: string): Promise<AuthResult> => {
-    await loginSchema.parseAsync({ email, password })
-    
     const user = await UserModel.findOne({ email })
     if (!user) throw new Error("USER_NOT_FOUND")
 
@@ -53,4 +56,11 @@ export const login = async (email: string, password: string): Promise<AuthResult
         token,
         expiresIn: JWT_EXPIRES_IN
     }
+}
+
+export const verify = async (token: string) : Promise<string> => {
+    let decoded: jwt.JwtPayload = jwt.verify(token, JWT_SECRET) as jwt.JwtPayload
+    const user = await UserModel.findById(decoded.id)
+    if(!user) throw new Error("USER_TOKEN_NOT_FOUND")
+    return decoded.id
 }

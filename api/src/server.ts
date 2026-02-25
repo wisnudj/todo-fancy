@@ -10,7 +10,7 @@ server.on("listening", () => {
     console.log(`Server running on port ${config.APP_PORT}`)
 
     // MongoDB Connection
-    const mongoURI = `mongodb://${config.MONGO_USERNAME}:${config.MONGO_PASSWORD}@${config.MONGO_HOST}:${config.MONGO_PORT}/${config.MONGO_DB}`
+    const mongoURI = `mongodb://${config.MONGO_USERNAME}:${config.MONGO_PASSWORD}@${config.MONGO_HOST}:${config.MONGO_PORT}/${config.MONGO_DB}?authSource=admin`
     mongoose.connect(mongoURI)
         .then(() => {
             console.log("MongoDB connected")

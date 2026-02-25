@@ -1,6 +1,6 @@
 import { TaskModel, Task } from "../models/task";
 
-export interface TaskResult {
+export interface TaskPagination {
     limit: number;
     total: number;
     page: number;
@@ -16,32 +16,72 @@ export interface TaskQuery {
     page: number;
 }
 
-export const getTasks = async(params: TaskQuery): Promise<TaskResult> => {
-    const page: number = params.page === 0 ? 1 : params.page;
-    const limit: number = params.limit === 0 ? 100: params.limit
+export interface TaskItem {
+    id: string;
+    title: string;
+    completed: boolean;
+    updatedAt: Date;
+}
+
+export interface UpdateTaskParam {
+    id: string;
+    userId: string;
+    title?: string;
+    completed?: boolean;
+}
+
+export const getTasks = async(query: TaskQuery): Promise<TaskPagination> => {
+    const { page, limit, userId, title } = query
     const skip: number = (page - 1) * limit
 
-    const userId = params.userId
-    const title = params.title
+    const filter: any = {}
 
-    const [items, total] = await Promise.all([
-        TaskModel.find({ userId, title })
+    if(userId) filter.userId = userId
+
+    if(title) {
+        filter.title = { $regex: title, $options: "i" }
+    }
+
+    const [items, total = 0] = await Promise.all([
+        TaskModel.find(filter)
+            .select("-__v -userId")
             .sort({ createdAt: -1 })
             .skip(skip)
             .limit(limit)
             .lean(),
-        TaskModel.countDocuments({ userId })
+        TaskModel.countDocuments(filter)
     ])
 
+    const totalPages = total === 0 ? 0 : Math.ceil(total / limit)
+
     return {
-        page,
-        limit,
-        total,
-        totalPages: Math.ceil(total / limit),
-        items
+        limit: limit,
+        total: total,
+        page: page,
+        totalPages: totalPages,
+        items: items
     }
 }
 
-export const addTask = async(userId: string, title: string): Promise<Task> => {
-    return await TaskModel.create({ title, userId })
+export const addTask = async(userId: string, title: string): Promise<TaskItem> => {
+    const task = await TaskModel.create({ title, userId })
+    return { id: task._id.toString(), title: task.title, completed: task.completed, updatedAt: task.updatedAt }
+}
+
+export const updateTask = async(param: UpdateTaskParam): Promise<TaskItem> => {
+    const { id, userId, title, completed } = param
+
+    const update: any = {}
+    if(title) update.title = title
+    if(completed) update.completed = title
+
+    const updated = await TaskModel.findOneAndUpdate(
+        { _id: id, userId },
+        { $set: update },
+        { new: true, runValidators: true }
+    )
+
+    if(!updated) throw new Error("TASK_NOT_FOUND")
+
+    return { id: updated._id.toString(), title: updated.title, completed: updated.completed, updatedAt: updated.updatedAt }
 }

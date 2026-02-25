@@ -25,6 +25,8 @@ const TaskSchema = new Schema<Task>({
       required: true,
       index: true,
     },
+}, {
+    timestamps: true
 })
 
 export const TaskModel = model<Task>("Task", TaskSchema)
