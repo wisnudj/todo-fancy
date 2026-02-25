@@ -5,7 +5,7 @@ export interface TaskPagination {
     total: number;
     page: number;
     totalPages: number;
-    items: Task[]
+    items: TaskItem[]
 }
 
 export interface TaskQuery {
@@ -52,6 +52,10 @@ export const getTasks = async(query: TaskQuery): Promise<TaskPagination> => {
         TaskModel.countDocuments(filter)
     ])
 
+    const taskItems: TaskItem[] = items.map((el: Task) => {
+        return { id: el._id.toString(), title: el.title, completed: el.completed, updatedAt: el.updatedAt }
+    })
+
     const totalPages = total === 0 ? 0 : Math.ceil(total / limit)
 
     return {
@@ -59,7 +63,7 @@ export const getTasks = async(query: TaskQuery): Promise<TaskPagination> => {
         total: total,
         page: page,
         totalPages: totalPages,
-        items: items
+        items: taskItems
     }
 }
 
