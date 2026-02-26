@@ -17,12 +17,16 @@
   "dependencies": {
     "@fortawesome/fontawesome-free": "^7.1.0",
     "bulma": "^1.0.4",
+    "passport": "^0.7.0",
+    "passport-http-bearer": "^1.0.1",
     "vue": "^3.5.27",
     "vue-router": "^5.0.1"
   },
   "devDependencies": {
     "@tsconfig/node24": "^24.0.4",
     "@types/node": "^24.10.9",
+    "@types/passport": "^1.0.17",
+    "@types/passport-http-bearer": "^1.0.42",
     "@vitejs/plugin-vue": "^6.0.3",
     "@vue/eslint-config-typescript": "^14.6.0",
     "@vue/tsconfig": "^0.8.1",

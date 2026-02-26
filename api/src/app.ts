@@ -7,9 +7,9 @@ import taskRoute from "./routes/task-route"
 import cors from "cors"
 
 const app: Express = express()
+app.use(cors())
 app.use(express.json())
 app.use(httpLogger)
-app.use(cors())
 
 app.use("/api/auth", authRoute)
 app.use("/api/task", taskRoute)

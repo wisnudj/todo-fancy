@@ -1,4 +1,4 @@
-import { ApiError } from "./error"
+import { ApiError, extractMessageFromResponse } from "./error"
 
 export interface AuthResp {
   token: string;
@@ -57,13 +57,4 @@ export async function login(email: string, password: string): Promise<AuthResp> 
   }
 }
 
-async function extractMessageFromResponse(resp: Response): Promise<string> {
-  const text = await resp.text()
-  let message = text
-  try {
-    const json = JSON.parse(text)
-    if (json.message) message = json.message
-  } catch {
-  }
-  return message
-}
+

@@ -20,7 +20,7 @@
                       <div class="field">
                         <label class="label">Email</label>
                         <div class="control has-icons-left">
-                          <input type="email" class="input" placeholder="email@example.com" v-model.trim="loginForm.email" />
+                          <input type="email" class="input" placeholder="email@example.com" v-model.trim="loginForm.email" autocomplete="username" />
                           <span class="icon is-small is-left">
                             <i class="fas fa-envelope"></i>
                           </span>
@@ -30,7 +30,7 @@
                       <div class="field">
                         <label class="label">Password</label>
                         <div class="control has-icons-left">
-                          <input type="password" class="input" placeholder="********" v-model.trim="loginForm.password" />
+                          <input type="password" class="input" placeholder="••••••••" v-model.trim="loginForm.password" autocomplete="current-password" />
                           <span class="icon is-small is-left">
                             <i class="fas fa-lock"></i>
                           </span>
@@ -52,7 +52,7 @@
                       <div class="field">
                         <label class="label">Email</label>
                         <div class="control has-icons-left">
-                          <input type="email" class="input" placeholder="email@example.com" v-model.trim="registerForm.email" />
+                          <input type="email" class="input" placeholder="email@example.com" v-model.trim="registerForm.email" autocomplete="username" />
                           <span class="icon is-small is-left">
                             <i class="fas fa-envelope"></i>
                           </span>
@@ -62,7 +62,7 @@
                       <div class="field">
                         <label class="label">Password</label>
                         <div class="control has-icons-left">
-                          <input type="password" class="input" placeholder="••••••••" v-model.trim="registerForm.password" />
+                          <input type="password" class="input" placeholder="••••••••" v-model.trim="registerForm.password" autocomplete="new-password" />
                           <span class="icon is-small is-left">
                             <i class="fas fa-lock"></i>
                           </span>
@@ -72,7 +72,7 @@
                       <div class="field">
                         <label class="label">Confirm Password</label>
                         <div class="control has-icons-left">
-                          <input type="password" class="input" placeholder="••••••••" v-model.trim="registerForm.confirmPassword" />
+                          <input type="password" class="input" placeholder="••••••••" v-model.trim="registerForm.confirmPassword" autocomplete="new-password" />
                           <span class="icon is-small is-left">
                             <i class="fas fa-lock"></i>
                           </span>
