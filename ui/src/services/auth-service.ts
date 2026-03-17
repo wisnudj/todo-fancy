@@ -1,60 +1,19 @@
 import { ApiError, extractMessageFromResponse } from "./error"
+import api from "./api"
 
 export interface AuthResp {
   token: string;
   expiresIn: string;
+  email: string;
 }
 
 
 export async function register(email: string, password: string, confirmPassword: string): Promise<AuthResp> {
-  const resp = await fetch(`${import.meta.env.VITE_API_BASE_URL}/auth/register`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      email,
-      password,
-      confirmPassword
-    })
-  })
-
-  if(!resp.ok) {
-    const message = await extractMessageFromResponse(resp)
-    throw new ApiError({ message: message, status: resp.status, url: `${import.meta.env.VITE_API_BASE_URL}/auth/register` })
-  }
-
-  const json = await resp.json()
-
-  return {
-    token: json.token,
-    expiresIn: json.expiresIn
-  }
+  const { data } = await api.post<AuthResp>("/auth/register", { email, password, confirmPassword })
+  return data
 }
 
 export async function login(email: string, password: string): Promise<AuthResp> {
-  const resp = await fetch(`${import.meta.env.VITE_API_BASE_URL}/auth/login`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      email,
-      password
-    })
-  })
-
-  if(!resp.ok) {
-    const message = await extractMessageFromResponse(resp)
-    throw new ApiError({ message: message, status: resp.status, url: `${import.meta.env.VITE_API_BASE_URL}/auth/login` })
-  }
-
-  const json = await resp.json()
-
-  return {
-    token: json.token,
-    expiresIn: json.expiresIn
-  }
+  const { data } = await api.post<AuthResp>("/auth/login", { email, password });
+  return data;
 }
-
-

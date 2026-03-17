@@ -1,4 +1,5 @@
 import { ApiError, extractMessageFromResponse } from "./error"
+import api from "./api"
 
 export interface TaskItem {
   id: string;
@@ -10,6 +11,8 @@ export interface TaskItem {
 export interface TaskPagination {
   limit: number;
   total: number;
+  totalCompletedTask: number;
+  totalActiveTask: number;
   page: number;
   totalPages: number;
   items: TaskItem[]
@@ -40,9 +43,11 @@ export async function getTasks(token: string, title: string, completed?: boolean
   return {
     limit: json.limit,
     total: json.total,
+    totalActiveTask: json.totalActiveTask,
+    totalCompletedTask: json.totalCompletedTask,
     page: json.page,
     totalPages: json.totalPages,
-    items: json.taskItems
+    items: json.items
   }
 }
 
@@ -71,4 +76,9 @@ export async function addTask(token: string, title: string): Promise<TaskItem> {
     completed: json.completed,
     updatedAt: json.updatedAt
   }
+}
+
+export async function updateTask(token: string, taskId: string, title: string | undefined, completed: boolean | undefined): Promise<TaskItem> {
+  const { data } = await api.patch<TaskItem>(`/task/${taskId}`, { title, completed })
+  return data
 }

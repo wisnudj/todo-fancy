@@ -146,7 +146,7 @@ function validateEmail(email : string) : boolean {
 
 function validatePassword(password : string) : boolean {
   // at least 8 characters, 1 uppercase, 1 lowercase, 1 number, 1 special character
-  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
+  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^\r\n]{8,64}$/
   return passwordRegex.test(password)
 }
 
@@ -190,7 +190,6 @@ function validateRegisterForm() : boolean {
     registerForm.passwordError = 'Password is required'
   }
   else if (!validatePassword(registerForm.password)) {
-    console.log("Password is invalid", registerForm.password)
     registerForm.passwordError = 'Password is invalid'
   }
   else {
@@ -223,6 +222,7 @@ async function handleLogin() : Promise<void> {
     if(resultLogin.token && resultLogin.expiresIn) {
       localStorage.setItem("token", resultLogin.token)
       localStorage.setItem("expiresIn", resultLogin.expiresIn)
+      localStorage.setItem("user_email", resultLogin.email)
       router.push("/")
     }
     else {
@@ -253,6 +253,7 @@ async function handleRegister() : Promise<void> {
     if (resultRegister.token && resultRegister.expiresIn) {
       localStorage.setItem("token", resultRegister.token)
       localStorage.setItem("expiresIn", resultRegister.expiresIn)
+      localStorage.setItem("user_email", resultRegister.email)
       router.push("/")
     }
     else {
