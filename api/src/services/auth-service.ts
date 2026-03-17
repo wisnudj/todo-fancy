@@ -11,6 +11,7 @@ const SALT_ROUNDS = 10
 export interface AuthResult {
     token: string;
     expiresIn: number;
+    email: string;
 }
 
 export interface UserResult {
@@ -39,7 +40,8 @@ export const register = async (email: string, password: string, confirmPassword:
 
     return {
         token,
-        expiresIn: JWT_EXPIRES_IN
+        expiresIn: JWT_EXPIRES_IN,
+        email: email
     }
 }
 
@@ -54,7 +56,8 @@ export const login = async (email: string, password: string): Promise<AuthResult
 
     return {
         token,
-        expiresIn: JWT_EXPIRES_IN
+        expiresIn: JWT_EXPIRES_IN,
+        email: email
     }
 }
 

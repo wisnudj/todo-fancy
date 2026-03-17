@@ -1,8 +1,12 @@
+import sanitizeHtml from 'sanitize-html';
+
 import { TaskModel, Task } from "../models/task";
 
 export interface TaskPagination {
     limit: number;
     total: number;
+    totalCompletedTask: number;
+    totalActiveTask: number;
     page: number;
     totalPages: number;
     items: TaskItem[]
@@ -26,8 +30,15 @@ export interface TaskItem {
 export interface UpdateTaskParam {
     id: string;
     userId: string;
-    title?: string;
-    completed?: boolean;
+    title?: string | undefined;
+    completed?: boolean | undefined;
+}
+
+function sanitizePlainText(value: string): string {
+    return sanitizeHtml(value, {
+        allowedTags: [],
+        allowedAttributes: {},
+    }).trim();
 }
 
 export const getTasks = async(query: TaskQuery): Promise<TaskPagination> => {
@@ -42,25 +53,29 @@ export const getTasks = async(query: TaskQuery): Promise<TaskPagination> => {
         filter.title = { $regex: title, $options: "i" }
     }
 
-    const [items, total = 0] = await Promise.all([
+    const [items, totalTask = 0, totalCompletedTask = 0] = await Promise.all([
         TaskModel.find(filter)
             .select("-__v -userId")
             .sort({ createdAt: -1 })
             .skip(skip)
             .limit(limit)
             .lean(),
-        TaskModel.countDocuments(filter)
+        TaskModel.countDocuments(filter),
+        TaskModel.countDocuments({...filter, completed: true})
     ])
 
     const taskItems: TaskItem[] = items.map((el: Task) => {
         return { id: el._id.toString(), title: el.title, completed: el.completed, updatedAt: el.updatedAt }
     })
 
-    const totalPages = total === 0 ? 0 : Math.ceil(total / limit)
+    const totalPages = totalTask === 0 ? 0 : Math.ceil(totalTask / limit)
+    const totalActiveTask = totalTask - totalCompletedTask
 
     return {
         limit: limit,
-        total: total,
+        total: totalTask,
+        totalCompletedTask: totalCompletedTask,
+        totalActiveTask: totalActiveTask,
         page: page,
         totalPages: totalPages,
         items: taskItems
@@ -68,7 +83,8 @@ export const getTasks = async(query: TaskQuery): Promise<TaskPagination> => {
 }
 
 export const addTask = async(userId: string, title: string): Promise<TaskItem> => {
-    const task = await TaskModel.create({ title, userId })
+    const sanitizeTitle: string = sanitizePlainText(title)
+    const task = await TaskModel.create({ title: sanitizeTitle, userId })
     return { id: task._id.toString(), title: task.title, completed: task.completed, updatedAt: task.updatedAt }
 }
 
@@ -76,8 +92,8 @@ export const updateTask = async(param: UpdateTaskParam): Promise<TaskItem> => {
     const { id, userId, title, completed } = param
 
     const update: any = {}
-    if(title) update.title = title
-    if(completed) update.completed = title
+    if(title !== undefined) update.title = title
+    if(completed !== undefined) update.completed = completed
 
     const updated = await TaskModel.findOneAndUpdate(
         { _id: id, userId },

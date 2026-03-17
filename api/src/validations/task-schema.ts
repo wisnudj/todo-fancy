@@ -27,7 +27,7 @@ export const TaskQuerySchema = z.object({
 })
 
 export const TaskAddSchema = z.object({
-    title: z.string().regex(/^[a-zA-Z0-9_]+$/, "title must alfanumberic").trim().min(1, "title minimum 1").max(50, "title maximum 50")
+    title: z.string().trim().min(1, "title minimum 1").max(50, "title maximum 50")
 })
 
 export const TaskUpdateSchema = z.object({
